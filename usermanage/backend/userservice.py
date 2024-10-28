@@ -19,10 +19,21 @@ class ServiceInterface:
 
     def update(self, model, instance_id, **k):
         try:
-            return  model.objects.update(pk=instance_id, **k)
+            return model.objects.get(pk=instance_id)
+            # for key, value in k.items():
+            #     setattr(instance, key, value)
+            # instance.save()
         except Exception as e:
             print(e)
             return None
+
+
+        # except model.DoesNotExist:
+        #     print(f"{model.__name__} with id {instance_id} does not exist.")
+        #     return None
+        # except Exception as e:
+        #     print(f"Error updating {model.__name__}: {e}")
+        #     return None
 
     def filter(self, model, **k):
         try:

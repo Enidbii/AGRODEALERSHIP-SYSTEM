@@ -18,6 +18,10 @@ class BaseModel(models.Model):
 class OtherUser(User, BaseModel):
     phone_number = models.CharField(max_length=100, null=False, blank=True)
     status = models.ForeignKey("State", on_delete=models.CASCADE, null=True, blank=True)
+    corporate = models.ForeignKey("Corporate", on_delete=models.CASCADE, null=True, blank=True)
+
+    # def __str__(self):
+    #     return "%s" % self.id
 
 class GenericBaseModel(BaseModel):
     name = models.CharField(max_length=200, null=False, default=True)
@@ -27,8 +31,11 @@ class GenericBaseModel(BaseModel):
         abstract = True
 
 class Corporate(GenericBaseModel):
-    alias = models.CharField(max_length=100, unique=True, null=False)
-    status = models.ForeignKey("State",on_delete=CASCADE)
+    alias = models.CharField(max_length=100, unique=True, null=False, blank=False)
+    status = models.ForeignKey("State",on_delete=CASCADE, null=True, blank=True)
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
 #
 class State(GenericBaseModel):
     # state_choices = [

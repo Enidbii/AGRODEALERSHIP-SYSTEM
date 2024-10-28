@@ -3,8 +3,9 @@ from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from usermanage.backend.userservice import ServiceInterface
-from usermanage.models import OtherUser
+from django.contrib.auth import logout
+from usermanage.backend.servicebase import ServiceInterface
+from usermanage.models import OtherUser, Corporate
 
 
 def get_request_data(request):
@@ -25,7 +26,7 @@ def get_request_data(request):
             data_dict = json.loads(request.body)
         except Exception as e:
             print(e)
-            data_dict = request.body
+            return None
         return data_dict
 
 
@@ -81,15 +82,59 @@ class AuthenticateUser(object):
         else:
             return JsonResponse({"code": "404.001", "message": "User not found"}, status=404)
 
-    def update(self, request):
+    def update(self, request, user_id):
         data = get_request_data(request)
-        username = data.get('username')
-        user_id = data.get('id')
-        if not username:
-            return JsonResponse({"code": "202.000.000", "message": "The username is incorrect"})
-        update = ServiceInterface().update(OtherUser,instance_id=user_id, username=username)
-        update.save()
-        return JsonResponse({"code": "200.000.000", "message": "Username updated successfully"})
+        print(data)
+        first_name = data.get("first_name")
+        print(first_name)
+        last_name = data.get("last_name")
+        username = data.get("username")
+        password = data.get("password")
+        phone_number = data.get("phone_number")
+        if not user_id:
+            return JsonResponse({"code": "202.000.000", "message": "The user_id does not exist"})
+        try:
+            updated = ServiceInterface().update(OtherUser, instance_id=user_id,first_name=first_name, last_name=last_name,
+                                               username=username, password=password, phone_number=phone_number)
+            updated.save()
+            return JsonResponse({"code": "200.000.000", "message": "Updated successfully"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({"code": "404.000.000", "message": "Could not be updated successfully"})
+
+
+    def logout(self, request):
+        try:
+            ServiceInterface().logout(OtherUser)
+            return JsonResponse({"code": "200.000.000", "message": "Logout successful"})
+        except Exception as e:
+            print(e)
+            return JsonResponse({"code": "404.000.000", "message": "Logout unsuccessful"})
+
+    def create_corporate(self, request):
+        data = get_request_data(request)
+        print(data)
+        name = data.get("name")
+        description = data.get("description")
+        alias = data.get("Alias")
+        print(name, description, alias)
+
+        required_fields = ['name', 'description', 'Alias']
+
+        if missing_required_fields(data, required_fields):
+            return JsonResponse({"code": "404.000", "message": "Missing the required fields"})
+
+        try:
+            corporate = ServiceInterface().create_user(Corporate, name=name, description=description, alias=alias)
+            print(type(corporate))
+            corporate.save()
+            return JsonResponse({"code": "200.000.000", "message":"Corporate successfully created!"})
+
+        except Exception as e:
+            print(e)
+            return JsonResponse({"code": "404.000.000", "message": "Corporate creation unsuccessful"})
+
+
 
 
 

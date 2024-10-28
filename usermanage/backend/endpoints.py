@@ -30,9 +30,24 @@ def delete_user(request):
         return None
 
 @csrf_exempt
-def update(request):
+def update(request, user_id):
     try:
-        return HttpResponse(AuthenticateUser().update(request))
+        return HttpResponse(AuthenticateUser().update(request, user_id))
+    except Exception as e:
+        print(e)
+        return None
+
+@csrf_exempt
+def logout(request):
+    try:
+        return HttpResponse(AuthenticateUser().logout(request))
+    except Exception as e:
+        print(e)
+        return None
+@csrf_exempt
+def create_corporate(request):
+    try:
+        return HttpResponse(AuthenticateUser().create_corporate(request))
     except Exception as e:
         print(e)
         return None
@@ -42,5 +57,7 @@ from django.urls import path
 urlpatterns = [
     path('login/', login, name="login"),
     path('register/', create_user, name="create" ),
-    path('update/', update, name="update")
+    path('update/<int:user_id>/', update, name="update"),
+    path('logout/', logout, name="logout"),
+    path('create_corporate/', create_corporate, name="create_corporate")
 ]
