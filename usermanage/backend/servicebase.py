@@ -35,11 +35,12 @@ class ServiceInterface:
             print(e)
             return None
 
-    def delete(self, model, user_id):
+    def delete(self, model, instance_id):
         try:
-            return model.objects.delete(user_id)
+            return model.objects.filter(pk=instance_id).delete()
         except Exception as e:
             print(e)
+            return None
 
     def logout(self, model):
         try:

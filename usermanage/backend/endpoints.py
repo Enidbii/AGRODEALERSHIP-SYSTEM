@@ -21,18 +21,18 @@ def create_user(request):
     except Exception as e:
         print(e)
         return None
-
+@csrf_exempt
 def delete_user(request):
     try:
-        return JsonResponse(AuthenticateUser().delete(request), safe=False)
+        return JsonResponse(AuthenticateUser().delete_user(request), safe=False)
     except Exception as e:
         print(e)
         return None
 
 @csrf_exempt
-def update(request, user_id):
+def update(request):
     try:
-        return HttpResponse(AuthenticateUser().update(request, user_id))
+        return HttpResponse(AuthenticateUser().update(request))
     except Exception as e:
         print(e)
         return None
@@ -52,12 +52,39 @@ def create_corporate(request):
         print(e)
         return None
 
+@csrf_exempt
+def add_state(request):
+    try:
+        return HttpResponse(AuthenticateUser().add_state(request))
+    except Exception as e:
+        print(e)
+        return None
+
+@csrf_exempt
+def delete_user(request):
+    try:
+        return HttpResponse(AuthenticateUser().delete_user(request))
+    except Exception as e:
+        print(e)
+        return None
+
+@csrf_exempt
+def corporate_update(request):
+    try:
+        return HttpResponse(AuthenticateUser().update_corporate(request))
+    except Exception as e:
+        print(e)
+        return None
+
 from django.urls import path
 
 urlpatterns = [
     path('login/', login, name="login"),
     path('register/', create_user, name="create" ),
-    path('update/<int:user_id>/', update, name="update"),
+    path('update/', update, name="update"),
     path('logout/', logout, name="logout"),
-    path('create_corporate/', create_corporate, name="create_corporate")
+    path('create_corporate/', create_corporate, name="create_corporate"),
+    path('add_state/', add_state, name="add_state"),
+    path('delete/', delete_user, name="delete"),
+    path('corporate_update/', corporate_update, name="corporate_update")
 ]
