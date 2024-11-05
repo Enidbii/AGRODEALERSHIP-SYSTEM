@@ -1,6 +1,6 @@
 
 class ServiceInterface:
-    def create_user(self, model, **k):
+    def create(self, model, **k):
         try:
             return model.objects.create(**k)
         except Exception as e:

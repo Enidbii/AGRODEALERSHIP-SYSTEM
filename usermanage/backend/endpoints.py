@@ -76,6 +76,7 @@ def corporate_update(request):
         print(e)
         return None
 
+
 from django.urls import path
 
 urlpatterns = [

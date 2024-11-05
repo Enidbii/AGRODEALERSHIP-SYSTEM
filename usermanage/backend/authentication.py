@@ -1,44 +1,12 @@
-import json
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-from django.contrib.auth import logout
-from sqlparse.tokens import Other
-
+from usermanage.backend.utils import get_request_data, missing_required_fields
 from usermanage.backend.servicebase import ServiceInterface
 from usermanage.models import OtherUser, Corporate, State
 
 
-def get_request_data(request):
-    if request.method == "GET":
-        try:
-            data_dict = json.loads(request.body)
-        except Exception:
-            data_dict = request.body
-        return data_dict
-    elif request.method == "POST":
-        try:
-            data_dict = json.loads(request.body)
-        except Exception:
-            data_dict = request.body
-        return data_dict
-    elif request.method == "PUT":
-        try:
-            data_dict = json.loads(request.body)
-        except Exception as e:
-            print(e)
-            return None
-        return data_dict
-
-
-
-def missing_required_fields(data, required_fields):
-    data_keys = list(data.keys())
-    for field in required_fields:
-        if field not in data_keys:
-            return True
-    return False
 
 class AuthenticateUser(object):
     @csrf_exempt
@@ -49,6 +17,7 @@ class AuthenticateUser(object):
         print(first_name)
         last_name = data.get("last_name")
         email = data.get("email")
+        email = email.lower()
         username = data.get("username")
         password = data.get("password")
         phone_number = data.get("phone_number")
@@ -58,10 +27,16 @@ class AuthenticateUser(object):
             return {"code": "404.000", "message": "You are missing some required fields"}
         else:
             try:
-                user = ServiceInterface().create_user(OtherUser, first_name=first_name, last_name=last_name, email=email,
+                user = User.objects.create(first_name=first_name, last_name=last_name, email=email,
+                                  username=username, phone_number=phone_number)
+                User.objects.get(username=username) # Retrieve a specific record
+                User.objects.all() # All objects
+                book = ServiceInterface().create(model=Book, name="Longhorn")
+                User.objects.filter(first_name="ENID") # Filter by specific attributes
+                user = ServiceInterface().create(User, first_name=first_name, last_name=last_name, email=email,
                                   username=username, phone_number=phone_number)
                 user.set_password(password)
-                user.save()
+                # user.save()
                 print(user.id)
                 return JsonResponse({"code": "200.000", "message": "User successfully created"})
             except Exception as e:
