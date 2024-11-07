@@ -24,7 +24,7 @@ def create_user(request):
 @csrf_exempt
 def delete_user(request):
     try:
-        return JsonResponse(AuthenticateUser().delete_user(request), safe=False)
+        return HttpResponse(AuthenticateUser().delete_user(request))
     except Exception as e:
         print(e)
         return None
@@ -76,6 +76,22 @@ def corporate_update(request):
         print(e)
         return None
 
+@csrf_exempt
+def create_group(request):
+    try:
+        return HttpResponse(AuthenticateUser().create_group(request))
+    except Exception as e:
+        print(e)
+        return None
+
+@csrf_exempt
+def records(request):
+    try:
+        return HttpResponse(AuthenticateUser().get_records())
+    except Exception as e:
+        print(e)
+        return None
+
 
 from django.urls import path
 
@@ -87,5 +103,7 @@ urlpatterns = [
     path('create_corporate/', create_corporate, name="create_corporate"),
     path('add_state/', add_state, name="add_state"),
     path('delete/', delete_user, name="delete"),
-    path('corporate_update/', corporate_update, name="corporate_update")
+    path('corporate_update/', corporate_update, name="corporate_update"),
+    path('create-group/', create_group, name="create_group"),
+    path('retrieve-records/', records, name="records")
 ]

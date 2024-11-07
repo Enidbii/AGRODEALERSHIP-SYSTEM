@@ -1,6 +1,6 @@
 import uuid
 from django.utils import timezone
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from django.db import models
 from django.db.models import CASCADE
 
@@ -17,6 +17,7 @@ class OtherUser(User, BaseModel):
     phone_number = models.CharField(max_length=100, null=False, blank=True)
     status = models.ForeignKey("State", on_delete=models.CASCADE, null=True, blank=True)
     corporate = models.ForeignKey("Corporate", on_delete=models.CASCADE, null=True, blank=True)
+    
 
     # def __str__(self):
     #     return "%s" % self.id
@@ -34,6 +35,9 @@ class Corporate(GenericBaseModel):
 
     def save(self, **kwargs):
         super().save(**kwargs)
+        
+    def __str__(self):
+        return "%s" % self.name
 #
 class State(GenericBaseModel):
     # state_choices = [

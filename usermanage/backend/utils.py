@@ -18,10 +18,14 @@ def get_request_data(request):
         try:
             data_dict = json.loads(request.body)
         except Exception as e:
-            print(e)
-            return None
+            data_dict = request.body
         return data_dict
-
+    elif request.method == "DELETE":
+        try:
+            data_dict = json.loads(request.body)
+        except Exception as e:
+            data_dict = request.body
+        return data_dict
 
 
 def missing_required_fields(data, required_fields):
