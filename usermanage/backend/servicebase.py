@@ -21,6 +21,13 @@ class ServiceInterface:
             print(e)
             return None
 
+    def retrieve_one_record(self, model, instance_id):
+        try:
+            return model.objects.filter(pk=instance_id)
+        except Exception as e:
+            print(e)
+            return None
+
     def update(self, model, instance_id, **k):
         try:
             return  model.objects.filter(pk=instance_id).update(**k)

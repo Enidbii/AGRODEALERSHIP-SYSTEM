@@ -1,6 +1,6 @@
 import uuid
 from django.utils import timezone
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import CASCADE
 
@@ -48,4 +48,16 @@ class State(GenericBaseModel):
     # ]
     # status = models.CharField(max_length=200, choices=state_choices, default=True)
     def __str__(self):
-        return "%s - %s" % (self.name, self.created_at)
+        return "%s" % self.name
+
+class Authorization(BaseModel):
+    app_name = models.CharField(max_length=150, null=False, blank=False)
+    consumer_key = models.CharField(max_length=250)
+    consumer_secret = models.CharField(max_length=255)
+    token = models.CharField(max_length=255)
+    status = models.ForeignKey("State",on_delete=CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return "%s" % self.app_name
+
+

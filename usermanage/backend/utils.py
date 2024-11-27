@@ -34,3 +34,10 @@ def missing_required_fields(data, required_fields):
         if field not in data_keys:
             return True
     return False
+
+def group_perm(group_name, permissions):
+    result = []
+    for perm in permissions:
+        data = {"group_name": group_name, "permissions": perm}
+        result.append(data)
+    return result

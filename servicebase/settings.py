@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from typing import List
 
-from django.conf.global_settings import AUTH_USER_MODEL
+from django.conf.global_settings import AUTH_USER_MODEL, AUTHENTICATION_BACKENDS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,6 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'ATOMIC_REQUEST': 'True'
     }
 }
 
@@ -103,7 +105,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 #AUTH_USER_MODEL = 'usermanage.OtherUser'
 
-
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend'
+]
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
